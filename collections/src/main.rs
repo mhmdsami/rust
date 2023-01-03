@@ -82,6 +82,94 @@ fn vector() {
     // pop -> returns the last element
 }
 
+fn string() {
+    // only string type in the core language is string slice str
+    // which are references to some encoded string data
+
+    // the String type provided by the standard library is
+    // growable, mutable and owned, Strings are UTF-8 encoded
+
+    // String is implemented as a wrapper around a vector of bytes, an
+    // instance of String can be created using new() just like a vector
+    let mut s = String::new();
+
+    // a String can be created with some initial data using to_string()
+    let data = "hi, it's me";
+
+    let s = data.to_string();
+    println!("{s}");
+
+    // to_string() also works on a literal directly
+    let s = "i'm the problem".to_string();
+    println!("{s}");
+
+    // String::from() method can also be used to create a String
+    // from a string literal
+
+    let s = String::from("it's me");
+    println!("{s}");
+
+    // updating a String
+    // str_push() takes a string slice
+    let mut s = String::from("Hello");
+    s.push_str(" World!");
+    println!("{s}");
+
+    // push() method takes in a single charater and adds it to the string
+    let mut s = String::from("Sia");
+    s.push('m');
+    println!("{s}");
+
+    // string concatenation using + operator
+    let s1 = String::from("Hello");
+    let s2 = String::from("world!");
+    let s = s1 + &s2; // s1 is no longer valid after this
+    println!("{s}");
+
+    // it is not possible to add two strings, in the above case the
+    // compiler coerces &String -> &str (deref coercion)
+
+    // concatenating multiple strings with +
+    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = s1 + "-" + &s2 + "-" + &s3;
+    println!("{s}");
+
+    // instead it is better to use format! macro
+    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{s1}-{s2}-{s3}");
+    println!("{s}");
+
+    // Rust Strings don't support indexing as it is a wrapper over Vec<u8>
+    // but rather than indexing using [] with a single number a slice can
+    // be created by passing a range
+    let hello = "Hallo";
+    let s = &hello[0..2];
+    println!("{s}");
+
+    // iterating over Strings
+    // by calling chars() method, separates the string into characters
+    let str = String::from("ts");
+    for c in str.chars() {
+        println!("{c}");
+    }
+
+    // bytes() method returns each of the raw byte
+    for b in str.bytes() {
+        println!("{b}");
+    }
+}
+
 fn main() {
+    println!("vectors:");
     vector();
+    println!("---------\n");
+    println!("strings:");
+    string();
+    println!("---------\n");
 }
