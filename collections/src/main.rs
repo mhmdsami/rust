@@ -165,6 +165,60 @@ fn string() {
     }
 }
 
+fn hash_map() {
+    // stores a mapping of keys to values using a hash function
+    // often called by a different name: hash, object, hash table
+    // dictionary or associatative array
+
+    // since HashMap is not commonly used, it is not included in the
+    // feautures brought into the scope automatically in the prelude
+    // it must be brought in by use keyword
+    use std::collections::HashMap;
+
+    let mut reg_nos: HashMap<String, i32> = HashMap::new();
+
+    reg_nos.insert(String::from("s"), 22);
+    reg_nos.insert(String::from("t"), 115);
+
+    let reg_no = reg_nos.get("s");
+    // get() returns Option
+
+    let name = String::from("t");
+    let reg_no = reg_nos.get(&name).copied().unwrap_or(0);
+
+    // get() -> Option<&T>, copied() -> Option<T>
+    // unwrap_or() handles the None variant in Option with a default
+
+    println!("t: {reg_no}");
+
+    // iterating over a hash map using for loop
+    for (name, reg_no) in &reg_nos {
+        println!("{name}: {reg_no}")
+    }
+
+    // when trying to the same key with a different value, the value
+    // associated with that key will be overwritten
+
+    // adding a key value only if the key isn't present
+    reg_nos.entry(String::from("s")).or_insert(115);
+    // checks if the key "s" exists in "reg_nos" or else
+    // creates an entry with 115 as the value
+
+    // updating a value based on the old value
+    let text = "hello world wonderful world";
+    let mut counter = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = counter.entry(word).or_insert(0);
+        *count += 1;
+    }
+    println!("{:#?}", counter);
+
+    // by deafult rust uses a hashing function called SipHash
+    // but other can be switched to another function by specifying a
+    // different hasher (which implements BuildHasher trait)
+}
+
 fn main() {
     println!("vectors:");
     vector();
@@ -172,4 +226,6 @@ fn main() {
     println!("strings:");
     string();
     println!("---------\n");
+    println!("hash maps:");
+    hash_map();
 }
