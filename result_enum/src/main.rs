@@ -1,6 +1,6 @@
 #![allow(unused)]
 use std::fs::File;
-use std::io::ErrorKind;
+use std::io::{self, ErrorKind, Read};
 
 fn main() {
     // most errors are not serious enough to require the program to
@@ -43,11 +43,10 @@ fn main() {
     // is a struct, which has a method kind to get an io::ErrorKind
     // io::ErrorKind is a enum representing the different kinds of errors that
     // might result from an io operation
-
     let greeting_file = match greeting_file_result {
         Ok(file) => file,
         Err(error) => match error.kind() {
-            ErrorKind::NotFound => match File::create("hello.txt") {
+            ErrorKind::NotFound => match File::create("rust.txt") {
                 Ok(fc) => fc,
                 Err(e) => panic!("Problem creating the file: {:?}", e),
             },
@@ -56,4 +55,46 @@ fn main() {
             }
         },
     };
+
+    // using match works, but it is verbose. Result<T, E> has several
+    // helper methods defined, unwrap method is a shortcut, implemented
+
+    // like match, if the Result variant is Ok, it returns the value
+    // in Ok, if the variant is Err, it will call panic!
+    let greeting_file = File::open("in.txt").unwrap();
+
+    // expect method lets us choose panic! error message
+    let greeting_file = File::open("tal.txt").expect("tal.txt must be present, where is it?");
+}
+
+// propagating errors
+// instead of handling errors within the function, the function can
+// return the error to the calling code
+
+// this function's return type is Result, instead of the function
+// handling the error, it propagates the error, so the calling function
+// has more control
+fn read_username_from_file() -> Result<String, io::Error> {
+    /*
+    let username_file_result = File::open("user.txt");
+
+    let mut username_file = match username_file_result {
+        Ok(file) => file,
+        Err(e) => return Err(e),
+    };
+
+    let mut username = String::new();
+
+    match username_file.read_to_string(&mut username) {
+        Ok(_) => Ok(username),
+        Err(e) => Err(e),
+        // explict return is not required as it is the last expression
+    }
+    */
+
+    // this pattern is so common, rust provides question mark operator
+    let mut username_file = File::open("hello.txt")?;
+    let mut username = String::new();
+    username_file.read_to_string(&mut username)?;
+    Ok(username)
 }
