@@ -1,5 +1,5 @@
 #![allow(unused)]
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{self, ErrorKind, Read};
 
 fn main() {
@@ -93,8 +93,40 @@ fn read_username_from_file() -> Result<String, io::Error> {
     */
 
     // this pattern is so common, rust provides question mark operator
+    // ? placed after Result value works almost in the same way as match
+    // if the value is Ok, the value inside Ok will get returned else
+    // if the value is Err, the Err will be returned as if we used return
+    // keyword and the error is propagated to the calling function
+
+    /*
     let mut username_file = File::open("hello.txt")?;
     let mut username = String::new();
     username_file.read_to_string(&mut username)?;
     Ok(username)
+    */
+
+    // the difference between ? operator and match is that, when ? operator
+    // is called, it goes through from function, defined in the From trait
+    // in the standard lib, used to convert from one type to another
+
+    // ? operator eliminates a lot of boilerplate
+    /*
+    let mut username = String::new();
+
+    File::open("in.txt")?.read_to_string(&mut username)?;
+
+    Ok(username)
+    */
+
+    // the above can be made even shorter, reading a file into string
+    // is a common operation, the standard lib provides fs::read_to_string
+    fs::read_to_string("in.txt")
+
+    // the ? operator can only be used in functions that return type
+    // as Result<T, E> or Option<T>, therefore it cannot be used in main()
+
+    // main can also return Result<(), E> but the return type should be
+    // changed to be Result<(), Box<dyn Error>> and add Ok(()) at the end
+
+    // Box<dyn Error> is a trait object, which means any kind of error
 }
