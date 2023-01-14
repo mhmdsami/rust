@@ -130,3 +130,18 @@ fn read_username_from_file() -> Result<String, io::Error> {
 
     // Box<dyn Error> is a trait object, which means any kind of error
 }
+
+// including robust error-handling code can make the code less clear
+// call to method like unwrap that could panic is meant as a placeholder
+
+// methods like unwrap and expect are handy when prototyping, before
+// we are ready to decide how to handle errors
+
+// it would be appropriate to call unwrap/expect when there is some other
+// logic that ensures Result will have an Ok value but the compiler can't
+// understand that, the Result value must still be handled
+
+// when to use panic! and Result
+// panic! mmust be used when the program is in a state it cannot handle
+// when something unexpected has happened
+// Result is used when an operation might fail but it could be recovered
